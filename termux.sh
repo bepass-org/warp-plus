@@ -43,7 +43,7 @@ install() {
     echo -e "${purple}*********************************${rest}"
     echo -e "${green}Installing Warp...${rest}"
     pkg update -y && pkg upgrade -y
-    pacman -Syu openssh = apt update; apt full-upgrade -y; apt install -y openssh
+    pkg install openssh -y
     check_dependencies
 
     if wget https://github.com/bepass-org/warp-plus/releases/latest/download/warp-plus_android-arm64.zip &&
@@ -72,7 +72,7 @@ install_arm() {
     echo -e "${purple}*********************************${rest}"
     echo -e "${green}Installing Warp...${rest}"
     pkg update -y && pkg upgrade -y
-    pacman -Syu openssh = apt update; apt full-upgrade -y; apt install -y openssh
+    pkg install openssh -y
     check_dependencies
 
     # Determine architecture
