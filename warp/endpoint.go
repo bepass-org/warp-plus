@@ -22,6 +22,13 @@ func WarpPrefixes() []netip.Prefix {
 	}
 }
 
+func WarpNAT64Prefixes() []netip.Prefix {
+	return []netip.Prefix{
+		netip.MustParsePrefix("2a02:898:146:64::a29f:c000/120"),
+		netip.MustParsePrefix("2001:67c:2960:6464::a29f:c000/120"),
+	}
+}
+
 func RandomWarpPrefix(v4, v6 bool) netip.Prefix {
 	if !v4 && !v6 {
 		panic("Must choose a IP version for RandomWarpPrefix")
