@@ -24,7 +24,6 @@ func RunScan(ctx context.Context, l *slog.Logger, opts ScanOptions) (result []ip
 
 	scanner := ipscanner.NewScanner(
 		ipscanner.WithLogger(l.With(slog.String("subsystem", "scanner"))),
-		ipscanner.WithWarpPing(),
 		ipscanner.WithWarpPrivateKey(opts.PrivateKey),
 		ipscanner.WithWarpPeerPublicKey(opts.PublicKey),
 		ipscanner.WithUseIPv4(opts.V4),

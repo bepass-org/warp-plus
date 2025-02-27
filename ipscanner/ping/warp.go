@@ -13,7 +13,7 @@ import (
 	"net/netip"
 	"time"
 
-	"github.com/bepass-org/warp-plus/ipscanner/internal/statute"
+	"github.com/bepass-org/warp-plus/ipscanner/statute"
 	"github.com/bepass-org/warp-plus/warp"
 	"github.com/flynn/noise"
 	"golang.org/x/crypto/blake2s"
@@ -47,8 +47,6 @@ type WarpPing struct {
 	PeerPublicKey string
 	PresharedKey  string
 	IP            netip.Addr
-
-	opts statute.ScannerOptions
 }
 
 func (h *WarpPing) Ping() statute.IPingResult {
@@ -287,8 +285,6 @@ func NewWarpPing(ip netip.Addr, opts *statute.ScannerOptions) *WarpPing {
 		PeerPublicKey: opts.WarpPeerPublicKey,
 		PresharedKey:  opts.WarpPresharedKey,
 		IP:            ip,
-
-		opts: *opts,
 	}
 }
 

@@ -57,7 +57,6 @@ func main() {
 	// new scanner
 	scanner := ipscanner.NewScanner(
 		ipscanner.WithLogger(slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))),
-		ipscanner.WithWarpPing(),
 		ipscanner.WithWarpPrivateKey("yGXeX7gMyUIZmK5QIgC7+XX5USUSskQvBYiQ6LdkiXI="),
 		ipscanner.WithWarpPeerPublicKey("bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo="),
 		ipscanner.WithUseIPv4(*v4),

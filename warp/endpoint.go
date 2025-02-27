@@ -11,7 +11,6 @@ import (
 func WarpPrefixes() []netip.Prefix {
 	return []netip.Prefix{
 		netip.MustParsePrefix("162.159.192.0/24"),
-		netip.MustParsePrefix("162.159.193.0/24"),
 		netip.MustParsePrefix("162.159.195.0/24"),
 		netip.MustParsePrefix("188.114.96.0/24"),
 		netip.MustParsePrefix("188.114.97.0/24"),

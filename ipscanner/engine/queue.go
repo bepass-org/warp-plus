@@ -6,7 +6,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/bepass-org/warp-plus/ipscanner/internal/statute"
+	"github.com/bepass-org/warp-plus/ipscanner/statute"
 )
 
 type IPQueue struct {
