@@ -3,9 +3,12 @@ package warp
 import (
 	"fmt"
 	"io"
+	"log/slog"
 	"net"
 	"net/netip"
+	"time"
 
+	"github.com/avast/retry-go"
 	"github.com/bepass-org/warp-plus/iputils"
 
 	"github.com/noql-net/certpool"
@@ -13,7 +16,9 @@ import (
 )
 
 // Dialer is a struct that holds various options for custom dialing.
-type Dialer struct{}
+type Dialer struct {
+	l *slog.Logger
+}
 
 const utlsExtensionSNICurve uint16 = 0x15
 
@@ -50,12 +55,10 @@ func (e *SNICurveExtension) Read(b []byte) (n int, err error) {
 	return e.Len(), io.EOF
 }
 
-// makeTLSHelloPacketWithSNICurve creates a TLS hello packet with SNICurve.
-func (d *Dialer) makeTLSHelloPacketWithSNICurve(plainConn net.Conn, config *tls.Config, sni string) (*tls.UConn, error) {
-	SNICurveSize := 1200
+const SNICurveSize = 1200
 
-	utlsConn := tls.UClient(plainConn, config, tls.HelloCustom)
-	spec := tls.ClientHelloSpec{
+func spec(sni string) *tls.ClientHelloSpec {
+	return &tls.ClientHelloSpec{
 		TLSVersMax: tls.VersionTLS12,
 		TLSVersMin: tls.VersionTLS12,
 		CipherSuites: []uint16{
@@ -102,7 +105,11 @@ func (d *Dialer) makeTLSHelloPacketWithSNICurve(plainConn net.Conn, config *tls.
 		},
 		GetSessionID: nil,
 	}
-	err := utlsConn.ApplyPreset(&spec)
+}
+
+func makeTLSHelloPacketWithSNICurve(plainConn net.Conn, config *tls.Config, sni string) (*tls.UConn, error) {
+	utlsConn := tls.UClient(plainConn, config, tls.HelloCustom)
+	err := utlsConn.ApplyPreset(spec(sni))
 	if err != nil {
 		return nil, fmt.Errorf("uTlsConn.Handshake() error: %w", err)
 	}
@@ -115,17 +122,13 @@ func (d *Dialer) makeTLSHelloPacketWithSNICurve(plainConn net.Conn, config *tls.
 	return utlsConn, nil
 }
 
-// TLSDial dials a TLS connection.
-func (d *Dialer) TLSDial(plainDialer *net.Dialer, network, addr string) (net.Conn, error) {
-	sni, _, err := net.SplitHostPort(addr)
-	if err != nil {
-		return nil, err
+func dialCurve(network string, ip netip.Addr, sni string) (net.Conn, error) {
+	plainDialer := &net.Dialer{
+		Timeout:   5 * time.Second,
+		KeepAlive: 5 * time.Second,
 	}
-	ip, err := iputils.RandomIPFromPrefix(netip.MustParsePrefix("141.101.113.0/24"))
-	if err != nil {
-		return nil, err
-	}
-	plainConn, err := plainDialer.Dial(network, ip.String()+":443")
+
+	plainConn, err := plainDialer.Dial(network, netip.AddrPortFrom(ip, 443).String())
 	if err != nil {
 		return nil, err
 	}
@@ -136,10 +139,125 @@ func (d *Dialer) TLSDial(plainDialer *net.Dialer, network, addr string) (net.Con
 		RootCAs:    certpool.Roots(),
 	}
 
-	utlsConn, handshakeErr := d.makeTLSHelloPacketWithSNICurve(plainConn, &config, sni)
+	tlsConn, handshakeErr := makeTLSHelloPacketWithSNICurve(plainConn, &config, sni)
 	if handshakeErr != nil {
 		_ = plainConn.Close()
 		return nil, handshakeErr
 	}
-	return utlsConn, nil
+	return tlsConn, nil
+}
+
+func dial2(network string, ip netip.Addr, sni string) (net.Conn, error) {
+	plainDialer := &net.Dialer{
+		Timeout:   5 * time.Second,
+		KeepAlive: 5 * time.Second,
+	}
+
+	plainConn, err := plainDialer.Dial(network, netip.AddrPortFrom(ip, 443).String())
+	if err != nil {
+		return nil, err
+	}
+
+	tlsConfig := tls.Config{
+		ServerName: sni,
+		MinVersion: tls.VersionTLS13,
+		RootCAs:    certpool.Roots(),
+	}
+
+	tlsConn := tls.Client(plainConn, &tlsConfig)
+	err = tlsConn.Handshake()
+	if err != nil {
+		_ = plainConn.Close()
+		return nil, err
+	}
+
+	return tlsConn, nil
+}
+func dial3(network string, ip netip.Addr, sni string) (net.Conn, error) {
+	plainDialer := &net.Dialer{
+		Timeout:   5 * time.Second,
+		KeepAlive: 5 * time.Second,
+	}
+
+	plainConn, err := plainDialer.Dial(network, netip.AddrPortFrom(ip, 443).String())
+	if err != nil {
+		return nil, err
+	}
+
+	tlsConfig := tls.Config{
+		ServerName: sni,
+		MinVersion: tls.VersionTLS13,
+		RootCAs:    certpool.Roots(),
+	}
+
+	tlsConn := tls.UClient(plainConn, &tlsConfig, tls.HelloChrome_Auto)
+	err = tlsConn.Handshake()
+	if err != nil {
+		_ = plainConn.Close()
+		return nil, err
+	}
+
+	return tlsConn, nil
+}
+
+// TLSDial dials a TLS connection.
+func (d *Dialer) TLSDial(network, addr string) (net.Conn, error) {
+	sni, _, err := net.SplitHostPort(addr)
+	if err != nil {
+		return nil, err
+	}
+	ip, err := iputils.RandomIPFromPrefix(netip.MustParsePrefix("141.101.113.0/24"))
+	if err != nil {
+		return nil, err
+	}
+
+	var tlsConn net.Conn
+
+	d.l.Info("attempting TLS dial fprint 1")
+	err = retry.Do(
+		func() error {
+			tlsConn, err = dialCurve(network, ip, sni)
+			return err
+		},
+		retry.Attempts(3),
+		retry.Delay(250*time.Millisecond),
+		retry.DelayType(retry.FixedDelay),
+		retry.OnRetry(func(n uint, err error) {
+			d.l.Info("retrying TLS dial", "attempt", n, "error", err)
+		}),
+	)
+
+	if err != nil {
+		d.l.Info("attempting TLS dial fprint 2")
+		err = retry.Do(
+			func() error {
+				tlsConn, err = dial2(network, ip, sni)
+				return err
+			},
+			retry.Attempts(3),
+			retry.Delay(250*time.Millisecond),
+			retry.DelayType(retry.FixedDelay),
+			retry.OnRetry(func(n uint, err error) {
+				d.l.Info("retrying TLS dial", "attempt", n, "error", err)
+			}),
+		)
+	}
+
+	if err != nil {
+		d.l.Info("attempting TLS dial fprint 3")
+		err = retry.Do(
+			func() error {
+				tlsConn, err = dial3(network, ip, sni)
+				return err
+			},
+			retry.Attempts(3),
+			retry.Delay(250*time.Millisecond),
+			retry.DelayType(retry.FixedDelay),
+			retry.OnRetry(func(n uint, err error) {
+				d.l.Info("retrying TLS dial", "attempt", n, "error", err)
+			}),
+		)
+	}
+
+	return tlsConn, nil
 }

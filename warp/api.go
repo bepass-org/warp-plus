@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log/slog"
 	"net"
 	"net/http"
 	"time"
@@ -15,34 +16,11 @@ const (
 	apiBase string = "https://api.cloudflareclient.com/v0a4005"
 )
 
-var client = makeClient()
-
 func defaultHeaders() map[string]string {
 	return map[string]string{
 		"Content-Type":      "application/json; charset=UTF-8",
 		"User-Agent":        "okhttp/3.12.1",
 		"CF-Client-Version": "a-6.30-3596",
-	}
-}
-
-func makeClient() *http.Client {
-	// Create a custom dialer using the TLS config
-	plainDialer := &net.Dialer{
-		Timeout:   5 * time.Second,
-		KeepAlive: 5 * time.Second,
-	}
-	tlsDialer := Dialer{}
-	// Create a custom HTTP transport
-	transport := &http.Transport{
-		DialTLSContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
-			return tlsDialer.TLSDial(plainDialer, network, addr)
-		},
-	}
-
-	// Create a custom HTTP client using the transport
-	return &http.Client{
-		Transport: transport,
-		// Other client configurations can be added here
 	}
 }
 
@@ -130,7 +108,27 @@ type License struct {
 	License string `json:"license"`
 }
 
-func GetAccount(authToken, deviceID string) (IdentityAccount, error) {
+type WarpAPI struct {
+	l      *slog.Logger
+	client *http.Client
+}
+
+func NewWarpAPI(l *slog.Logger) *WarpAPI {
+	tlsDialer := Dialer{l: l}
+	// Create a custom HTTP transport
+	transport := &http.Transport{
+		DialTLSContext: func(ctx context.Context, network, addr string) (net.Conn, error) {
+			return tlsDialer.TLSDial(network, addr)
+		},
+	}
+
+	return &WarpAPI{
+		l:      l,
+		client: &http.Client{Transport: transport},
+	}
+}
+
+func (w *WarpAPI) GetAccount(authToken, deviceID string) (IdentityAccount, error) {
 	reqUrl := fmt.Sprintf("%s/reg/%s/account", apiBase, deviceID)
 	method := "GET"
 
@@ -146,7 +144,7 @@ func GetAccount(authToken, deviceID string) (IdentityAccount, error) {
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
 	// Create HTTP client and execute request
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return IdentityAccount{}, err
 	}
@@ -170,7 +168,7 @@ func GetAccount(authToken, deviceID string) (IdentityAccount, error) {
 	return rspData, nil
 }
 
-func GetBoundDevices(authToken, deviceID string) ([]IdentityDevice, error) {
+func (w *WarpAPI) GetBoundDevices(authToken, deviceID string) ([]IdentityDevice, error) {
 	reqUrl := fmt.Sprintf("%s/reg/%s/account/devices", apiBase, deviceID)
 	method := "GET"
 
@@ -186,7 +184,7 @@ func GetBoundDevices(authToken, deviceID string) ([]IdentityDevice, error) {
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
 	// Create HTTP client and execute request
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return nil, err
 	}
@@ -210,7 +208,7 @@ func GetBoundDevices(authToken, deviceID string) ([]IdentityDevice, error) {
 	return rspData, nil
 }
 
-func GetSourceDevice(authToken, deviceID string) (Identity, error) {
+func (w *WarpAPI) GetSourceDevice(authToken, deviceID string) (Identity, error) {
 	reqUrl := fmt.Sprintf("%s/reg/%s", apiBase, deviceID)
 	method := "GET"
 
@@ -226,7 +224,7 @@ func GetSourceDevice(authToken, deviceID string) (Identity, error) {
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
 	// Create HTTP client and execute request
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return Identity{}, err
 	}
@@ -250,7 +248,7 @@ func GetSourceDevice(authToken, deviceID string) (Identity, error) {
 	return rspData, nil
 }
 
-func Register(publicKey string) (Identity, error) {
+func (w *WarpAPI) Register(publicKey string) (Identity, error) {
 	reqUrl := fmt.Sprintf("%s/reg", apiBase)
 	method := "POST"
 
@@ -281,7 +279,7 @@ func Register(publicKey string) (Identity, error) {
 	}
 
 	// Create HTTP client and execute request
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return Identity{}, err
 	}
@@ -305,7 +303,7 @@ func Register(publicKey string) (Identity, error) {
 	return rspData, nil
 }
 
-func ResetAccountLicense(authToken, deviceID string) (License, error) {
+func (w *WarpAPI) ResetAccountLicense(authToken, deviceID string) (License, error) {
 	reqUrl := fmt.Sprintf("%s/reg/%s/account/license", apiBase, deviceID)
 	method := "POST"
 
@@ -321,7 +319,7 @@ func ResetAccountLicense(authToken, deviceID string) (License, error) {
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
 	// Create HTTP client and execute request
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return License{}, err
 	}
@@ -345,7 +343,7 @@ func ResetAccountLicense(authToken, deviceID string) (License, error) {
 	return rspData, nil
 }
 
-func UpdateAccount(authToken, deviceID, license string) (IdentityAccount, error) {
+func (w *WarpAPI) UpdateAccount(authToken, deviceID, license string) (IdentityAccount, error) {
 	reqUrl := fmt.Sprintf("%s/reg/%s/account", apiBase, deviceID)
 	method := "PUT"
 
@@ -366,7 +364,7 @@ func UpdateAccount(authToken, deviceID, license string) (IdentityAccount, error)
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
 	// Create HTTP client and execute request
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return IdentityAccount{}, err
 	}
@@ -390,7 +388,7 @@ func UpdateAccount(authToken, deviceID, license string) (IdentityAccount, error)
 	return rspData, nil
 }
 
-func UpdateBoundDevice(authToken, deviceID, otherDeviceID, name string, active bool) (IdentityDevice, error) {
+func (w *WarpAPI) UpdateBoundDevice(authToken, deviceID, otherDeviceID, name string, active bool) (IdentityDevice, error) {
 	reqUrl := fmt.Sprintf("%s/reg/%s/account/reg/%s", apiBase, deviceID, otherDeviceID)
 	method := "PATCH"
 
@@ -416,7 +414,7 @@ func UpdateBoundDevice(authToken, deviceID, otherDeviceID, name string, active b
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
 	// Create HTTP client and execute request
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return IdentityDevice{}, err
 	}
@@ -440,7 +438,7 @@ func UpdateBoundDevice(authToken, deviceID, otherDeviceID, name string, active b
 	return rspData, nil
 }
 
-func UpdateSourceDevice(authToken, deviceID, publicKey string) (Identity, error) {
+func (w *WarpAPI) UpdateSourceDevice(authToken, deviceID, publicKey string) (Identity, error) {
 	reqUrl := fmt.Sprintf("%s/reg/%s", apiBase, deviceID)
 	method := "PATCH"
 
@@ -461,7 +459,7 @@ func UpdateSourceDevice(authToken, deviceID, publicKey string) (Identity, error)
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
 	// Create HTTP client and execute request
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return Identity{}, err
 	}
@@ -485,7 +483,7 @@ func UpdateSourceDevice(authToken, deviceID, publicKey string) (Identity, error)
 	return rspData, nil
 }
 
-func DeleteDevice(authToken, deviceID string) error {
+func (w *WarpAPI) DeleteDevice(authToken, deviceID string) error {
 	reqUrl := fmt.Sprintf("%s/reg/%s", apiBase, deviceID)
 	method := "DELETE"
 
@@ -501,7 +499,7 @@ func DeleteDevice(authToken, deviceID string) error {
 	req.Header.Set("Authorization", "Bearer "+authToken)
 
 	// Create HTTP client and execute request
-	resp, err := client.Do(req)
+	resp, err := w.client.Do(req)
 	if err != nil {
 		return err
 	}

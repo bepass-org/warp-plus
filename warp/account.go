@@ -29,6 +29,8 @@ func saveIdentity(a Identity, path string) error {
 func LoadOrCreateIdentity(l *slog.Logger, path, license string) (*Identity, error) {
 	l = l.With("subsystem", "warp/account")
 
+	warpAPI := NewWarpAPI(l)
+
 	i, err := LoadIdentity(path)
 	if err != nil {
 		l.Info("failed to load identity", "path", path, "error", err)
@@ -40,7 +42,7 @@ func LoadOrCreateIdentity(l *slog.Logger, path, license string) (*Identity, erro
 			return nil, err
 		}
 
-		i, err = CreateIdentity(l, license)
+		i, err = CreateIdentity(l, warpAPI, license)
 		if err != nil {
 			return nil, err
 		}
@@ -52,12 +54,12 @@ func LoadOrCreateIdentity(l *slog.Logger, path, license string) (*Identity, erro
 
 	if license != "" && i.Account.License != license {
 		l.Info("updating account license key")
-		_, err := UpdateAccount(i.Token, i.ID, license)
+		_, err := warpAPI.UpdateAccount(i.Token, i.ID, license)
 		if err != nil {
 			return nil, err
 		}
 
-		iAcc, err := GetAccount(i.Token, i.ID)
+		iAcc, err := warpAPI.GetAccount(i.Token, i.ID)
 		if err != nil {
 			return nil, err
 		}
@@ -97,7 +99,7 @@ func LoadIdentity(path string) (Identity, error) {
 	return *i, nil
 }
 
-func CreateIdentity(l *slog.Logger, license string) (Identity, error) {
+func CreateIdentity(l *slog.Logger, warpAPI *WarpAPI, license string) (Identity, error) {
 	priv, err := GeneratePrivateKey()
 	if err != nil {
 		return Identity{}, err
@@ -106,19 +108,19 @@ func CreateIdentity(l *slog.Logger, license string) (Identity, error) {
 	privateKey, publicKey := priv.String(), priv.PublicKey().String()
 
 	l.Info("creating new identity")
-	i, err := Register(publicKey)
+	i, err := warpAPI.Register(publicKey)
 	if err != nil {
 		return Identity{}, err
 	}
 
 	if license != "" {
 		l.Info("updating account license key")
-		_, err := UpdateAccount(i.Token, i.ID, license)
+		_, err := warpAPI.UpdateAccount(i.Token, i.ID, license)
 		if err != nil {
 			return Identity{}, err
 		}
 
-		ac, err := GetAccount(i.Token, i.ID)
+		ac, err := warpAPI.GetAccount(i.Token, i.ID)
 		if err != nil {
 			return Identity{}, err
 		}

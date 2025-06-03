@@ -7,6 +7,7 @@ toolchain go1.22.10
 require (
 	github.com/Psiphon-Labs/psiphon-tunnel-core v1.0.11-0.20250122170852-4ba6e22a08f1
 	github.com/adrg/xdg v0.5.3
+	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/carlmjohnson/versioninfo v0.22.5
 	github.com/fatih/color v1.18.0
 	github.com/flynn/noise v1.1.0
@@ -102,7 +103,7 @@ require (
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/sergeyfrolov/bsbuffer v0.0.0-20180903213811-94e85abb8507 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
-	github.com/stretchr/testify v1.9.0 // indirect
+	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/syndtr/gocapability v0.0.0-20200815063812-42c35b437635 // indirect
 	github.com/tailscale/goupnp v1.0.1-0.20210804011211-c64d0f06ea05 // indirect
 	github.com/tailscale/netlink v1.1.1-0.20211101221916-cabfb018fe85 // indirect
