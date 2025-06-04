@@ -53,4 +53,4 @@ jobs:
       - name: Build and push image
         env:
           TAGS: ${{ steps.meta.outputs.tags }}
-        run: ko build ./cmd/warp-plus --platform "${PLATFORMS}" --bare --tags $(echo $TAGS | tr ' ' ',')
+        run: ko build -ldflags "-checklinkname=0" ./cmd/warp-plus --platform "${PLATFORMS}" --bare --tags $(echo $TAGS | tr ' ' ',')

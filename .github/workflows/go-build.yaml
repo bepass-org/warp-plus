@@ -85,8 +85,8 @@ jobs:
 
       - name: Build warp-plus
         run: |
-          go build -v -o warp-plus_${{ env.ASSET_NAME }}/ -trimpath -ldflags "-s -w -buildid= -X main.version=${{ github.ref }}" ./cmd/warp-plus
-          go build -v -o warp-scan_${{ env.ASSET_NAME }}/ -trimpath -ldflags "-s -w -buildid= -X main.version=${{ github.ref }}" ./cmd/warp-scan
+          go build -v -o warp-plus_${{ env.ASSET_NAME }}/ -trimpath -ldflags "-s -w -buildid= -checklinkname=0 -X main.version=${{ github.ref }}" ./cmd/warp-plus
+          go build -v -o warp-scan_${{ env.ASSET_NAME }}/ -trimpath -ldflags "-s -w -buildid= -checklinkname=0 -X main.version=${{ github.ref }}" ./cmd/warp-scan
 
       - name: Copy README.md & LICENSE
         run: |
