@@ -1,11 +1,11 @@
 module github.com/bepass-org/warp-plus
 
-go 1.22.0
+go 1.23.0
 
-toolchain go1.22.10
+toolchain go1.24.3
 
 require (
-	github.com/Psiphon-Labs/psiphon-tunnel-core v1.0.11-0.20250122170852-4ba6e22a08f1
+	github.com/Psiphon-Labs/psiphon-tunnel-core v1.0.11-0.20250526204217-25ce5e4d95a5
 	github.com/adrg/xdg v0.5.3
 	github.com/avast/retry-go v3.0.0+incompatible
 	github.com/carlmjohnson/versioninfo v0.22.5
@@ -20,9 +20,9 @@ require (
 	github.com/rodaine/table v1.3.0
 	github.com/sagernet/gvisor v0.0.0-20241123041152-536d05261cff
 	github.com/sagernet/sing v0.5.1
-	golang.org/x/crypto v0.32.0
-	golang.org/x/net v0.34.0
-	golang.org/x/sys v0.29.0
+	golang.org/x/crypto v0.35.0
+	golang.org/x/net v0.36.0
+	golang.org/x/sys v0.30.0
 )
 
 require (
@@ -30,21 +30,22 @@ require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	filippo.io/keygen v0.0.0-20230306160926-5201437acf8e // indirect
 	github.com/AndreasBriese/bbloom v0.0.0-20190825152654-46b345b51c96 // indirect
+	github.com/Jigsaw-Code/outline-sdk v0.0.16 // indirect
 	github.com/Psiphon-Labs/bolt v0.0.0-20200624191537-23cedaef7ad7 // indirect
 	github.com/Psiphon-Labs/consistent v0.0.0-20240322131436-20aaa4e05737 // indirect
 	github.com/Psiphon-Labs/goptlib v0.0.0-20200406165125-c0e32a7a3464 // indirect
-	github.com/Psiphon-Labs/psiphon-tls v0.0.0-20240824224428-ca6969e315a9 // indirect
-	github.com/Psiphon-Labs/quic-go v0.0.0-20240821052333-b6316b594e39 // indirect
+	github.com/Psiphon-Labs/psiphon-tls v0.0.0-20250318183125-2a2fae2db378 // indirect
+	github.com/Psiphon-Labs/quic-go v0.0.0-20250325201346-c58235406399 // indirect
 	github.com/Psiphon-Labs/utls v1.1.1-0.20241107183331-b18909f8ccaa // indirect
 	github.com/alexbrainman/sspi v0.0.0-20231016080023-1a75b4708caa // indirect
-	github.com/andybalholm/brotli v1.0.6 // indirect
+	github.com/andybalholm/brotli v1.1.1 // indirect
 	github.com/armon/go-proxyproto v0.0.0-20180202201750-5b7edb60ff5f // indirect
 	github.com/bifurcation/mint v0.0.0-20180306135233-198357931e61 // indirect
 	github.com/bits-and-blooms/bitset v1.10.0 // indirect
 	github.com/bits-and-blooms/bloom/v3 v3.6.0 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cheekybits/genny v0.0.0-20170328200008-9127e812e1e9 // indirect
-	github.com/cloudflare/circl v1.3.7 // indirect
+	github.com/cloudflare/circl v1.5.0 // indirect
 	github.com/cognusion/go-cache-lru v0.0.0-20170419142635-f73e2280ecea // indirect
 	github.com/coreos/go-iptables v0.7.0 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
@@ -64,7 +65,7 @@ require (
 	github.com/grafov/m3u8 v0.0.0-20171211212457-6ab8f28ed427 // indirect
 	github.com/josharian/native v1.1.1-0.20230202152459-5c7d0dd6ab86 // indirect
 	github.com/jsimonetti/rtnetlink v1.3.5 // indirect
-	github.com/klauspost/compress v1.17.4 // indirect
+	github.com/klauspost/compress v1.17.11 // indirect
 	github.com/kr/pretty v0.3.1 // indirect
 	github.com/kr/text v0.2.0 // indirect
 	github.com/libp2p/go-reuseport v0.4.0 // indirect
@@ -102,6 +103,7 @@ require (
 	github.com/refraction-networking/obfs4 v0.1.2 // indirect
 	github.com/rogpeppe/go-internal v1.11.0 // indirect
 	github.com/sergeyfrolov/bsbuffer v0.0.0-20180903213811-94e85abb8507 // indirect
+	github.com/shadowsocks/go-shadowsocks2 v0.1.5 // indirect
 	github.com/sirupsen/logrus v1.9.3 // indirect
 	github.com/stretchr/testify v1.10.0 // indirect
 	github.com/syndtr/gocapability v0.0.0-20200815063812-42c35b437635 // indirect
@@ -110,15 +112,15 @@ require (
 	github.com/vishvananda/netlink v1.2.1-beta.2 // indirect
 	github.com/vishvananda/netns v0.0.4 // indirect
 	github.com/wader/filtertransport v0.0.0-20200316221534-bdd9e61eee78 // indirect
-	github.com/wlynxg/anet v0.0.1 // indirect
+	github.com/wlynxg/anet v0.0.5 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	gitlab.torproject.org/tpo/anti-censorship/pluggable-transports/goptlib v1.5.0 // indirect
 	go4.org/mem v0.0.0-20220726221520-4f986261bf13 // indirect
 	go4.org/netipx v0.0.0-20230824141953-6213f710f925 // indirect
-	golang.org/x/exp v0.0.0-20230905200255-921286631fa9 // indirect
+	golang.org/x/exp v0.0.0-20240110193028-0dcbfd608b1e // indirect
 	golang.org/x/mod v0.17.0 // indirect
-	golang.org/x/sync v0.10.0 // indirect
-	golang.org/x/text v0.21.0 // indirect
+	golang.org/x/sync v0.11.0 // indirect
+	golang.org/x/text v0.22.0 // indirect
 	golang.org/x/time v0.7.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	golang.zx2c4.com/wireguard v0.0.0-20230325221338-052af4a8072b // indirect
