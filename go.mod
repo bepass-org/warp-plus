@@ -1,6 +1,6 @@
 module github.com/bepass-org/warp-plus
 
-go 1.23.0
+go 1.24
 
 toolchain go1.24.3
 
@@ -16,13 +16,13 @@ require (
 	github.com/google/go-cmp v0.7.0
 	github.com/noql-net/certpool v0.0.0-20250417123926-688b52c002ee
 	github.com/peterbourgon/ff/v4 v4.0.0-alpha.4
-	github.com/refraction-networking/utls v1.6.7
+	github.com/refraction-networking/utls v1.7.3
 	github.com/rodaine/table v1.3.0
 	github.com/sagernet/gvisor v0.0.0-20241123041152-536d05261cff
 	github.com/sagernet/sing v0.5.1
-	golang.org/x/crypto v0.35.0
-	golang.org/x/net v0.36.0
-	golang.org/x/sys v0.30.0
+	golang.org/x/crypto v0.36.0
+	golang.org/x/net v0.38.0
+	golang.org/x/sys v0.31.0
 )
 
 require (
@@ -119,8 +119,8 @@ require (
 	go4.org/netipx v0.0.0-20230824141953-6213f710f925 // indirect
 	golang.org/x/exp v0.0.0-20240110193028-0dcbfd608b1e // indirect
 	golang.org/x/mod v0.17.0 // indirect
-	golang.org/x/sync v0.11.0 // indirect
-	golang.org/x/text v0.22.0 // indirect
+	golang.org/x/sync v0.12.0 // indirect
+	golang.org/x/text v0.23.0 // indirect
 	golang.org/x/time v0.7.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	golang.zx2c4.com/wireguard v0.0.0-20230325221338-052af4a8072b // indirect
