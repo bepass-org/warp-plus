@@ -14,7 +14,7 @@ require (
 	github.com/frankban/quicktest v1.14.6
 	github.com/go-ini/ini v1.67.0
 	github.com/google/go-cmp v0.7.0
-	github.com/noql-net/certpool v0.0.0-20250128174907-b15afbea6eae
+	github.com/noql-net/certpool v0.0.0-20250417123926-688b52c002ee
 	github.com/peterbourgon/ff/v4 v4.0.0-alpha.4
 	github.com/refraction-networking/utls v1.6.7
 	github.com/rodaine/table v1.3.0
