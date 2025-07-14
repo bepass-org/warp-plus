@@ -1,22 +1,37 @@
+<div align="center">
+
 # Warp-Plus
+
 
 Warp-Plus is an open-source implementation of Cloudflare's Warp, enhanced with Psiphon integration for circumventing censorship. This project aims to provide a robust and cross-platform VPN solution that can use psiphon on top of warp and warp-in-warp for changing the user virtual nat location.
 
-## Features
+</div>
+
+<p align="center">
+  <img src="https://img.shields.io/github/v/release/bepass-org/warp-plus?style=for-the-badge" alt="Release Version">
+  <img src="https://img.shields.io/github/license/bepass-org/warp-plus?style=for-the-badge" alt="License">
+</p>
+
+
+## ✨ Key Features
 
 - **Warp Integration**: Leverages Cloudflare's Warp to provide a fast and secure VPN service.
 - **Psiphon Chaining**: Integrates with Psiphon for censorship circumvention, allowing seamless access to the internet in restrictive environments.
 - **Warp in Warp Chaining**: Chaning two instances of warp together to bypass location restrictions.
 - **SOCKS5 Proxy Support**: Includes a SOCKS5 proxy for secure and private browsing.
 
-## Getting Started
+## 🚀 Getting Started
+
+### 📦 Download
+- [Arch Linux AUR Binary](https://aur.archlinux.org/packages/warp-plus-bin)
+- [Arch Linux AUR Source](https://aur.archlinux.org/packages/warp-plus)
+- [Download the latest version from the releases page](https://github.com/bepass-org/warp-plus/releases)
 
 ### Prerequisites
 
-- [Download the latest version from the releases page](https://github.com/bepass-org/warp-plus/releases)
 - Basic understanding of VPN and proxy configurations
 
-### Usage
+### 🛠️ Usage
 
 ```
 NAME
@@ -44,7 +59,7 @@ FLAGS
       --version            displays version number
 ```
 
-### Country Codes for Psiphon
+### 🌐 Country Codes for Psiphon
 
 - Austria (AT)
 - Australia (AU)
