@@ -23,9 +23,10 @@ Warp-Plus is an open-source implementation of Cloudflare's Warp, enhanced with P
 ## 🚀 Getting Started
 
 ### 📦 Download
-- [Arch Linux AUR](https://aur.archlinux.org/packages/warp-plus-bin)
+- [Arch Linux AUR Binary](https://aur.archlinux.org/packages/warp-plus-bin)
+- [Arch Linux AUR Source](https://aur.archlinux.org/packages/warp-plus)
 - [Download the latest version from the releases page](https://github.com/bepass-org/warp-plus/releases)
-- 
+
 ### Prerequisites
 
 - Basic understanding of VPN and proxy configurations
