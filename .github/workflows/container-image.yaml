@@ -24,7 +24,7 @@ jobs:
       PLATFORMS: linux/arm/v7,linux/arm64,linux/amd64
     steps:
       - name: Checkout codebase
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Go
         uses: actions/setup-go@v5
