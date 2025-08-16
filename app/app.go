@@ -56,6 +56,16 @@ func RunWarp(ctx context.Context, l *slog.Logger, opts WarpOptions) error {
 		return errors.New("must provide country for psiphon")
 	}
 
+	if opts.Endpoint == "" {
+		ident, err := warp.LoadOrCreateIdentity(l, path.Join(opts.CacheDir, "primary"), opts.License)
+		if err != nil {
+			l.Error("failed to load or create primary warp identity")
+			return err
+		}
+
+		opts.Endpoint = ident.Config.Peers[0].Endpoint.V4[:len(ident.Config.Peers[0].Endpoint.V4)-2] + ":500"
+	}
+
 	// Decide Working Scenario
 	endpoints := []string{opts.Endpoint, opts.Endpoint}
 
@@ -96,7 +106,7 @@ func RunWarp(ctx context.Context, l *slog.Logger, opts WarpOptions) error {
 	case opts.Gool:
 		l.Info("running in warp-in-warp (gool) mode")
 		// run warp in warp
-		warpErr = runWarpInWarp(ctx, l, opts, endpoints)
+		warpErr = runWarpInWarp(ctx, l, opts, endpoints[0])
 	default:
 		l.Info("running in normal warp mode")
 		// just run primary warp on bindAddress
@@ -237,7 +247,7 @@ func runWarp(ctx context.Context, l *slog.Logger, opts WarpOptions, endpoint str
 	return nil
 }
 
-func runWarpInWarp(ctx context.Context, l *slog.Logger, opts WarpOptions, endpoints []string) error {
+func runWarpInWarp(ctx context.Context, l *slog.Logger, opts WarpOptions, endpoint string) error {
 	// make primary identity
 	ident1, err := warp.LoadOrCreateIdentity(l, path.Join(opts.CacheDir, "primary"), opts.License)
 	if err != nil {
@@ -254,7 +264,7 @@ func runWarpInWarp(ctx context.Context, l *slog.Logger, opts WarpOptions, endpoi
 
 	// Enable trick and keepalive on all peers in config
 	for i, peer := range conf.Peers {
-		peer.Endpoint = endpoints[0]
+		peer.Endpoint = endpoint
 		peer.Trick = true
 		peer.KeepAlive = 5
 
@@ -297,7 +307,7 @@ func runWarpInWarp(ctx context.Context, l *slog.Logger, opts WarpOptions, endpoi
 	}
 
 	// Create a UDP port forward between localhost and the remote endpoint
-	addr, err := wiresocks.NewVtunUDPForwarder(ctx, netip.MustParseAddrPort("127.0.0.1:0"), endpoints[0], tnet1, singleMTU)
+	addr, err := wiresocks.NewVtunUDPForwarder(ctx, netip.MustParseAddrPort("127.0.0.1:0"), endpoint, tnet1, singleMTU)
 	if err != nil {
 		return err
 	}

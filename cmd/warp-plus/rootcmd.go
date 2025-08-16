@@ -13,7 +13,6 @@ import (
 	"github.com/adrg/xdg"
 	"github.com/bepass-org/warp-plus/app"
 	p "github.com/bepass-org/warp-plus/psiphon"
-	"github.com/bepass-org/warp-plus/warp"
 	"github.com/bepass-org/warp-plus/wiresocks"
 	"github.com/peterbourgon/ff/v4"
 	"github.com/peterbourgon/ff/v4/ffval"
@@ -203,15 +202,6 @@ func (c *rootConfig) exec(ctx context.Context, args []string) error {
 	if c.scan {
 		l.Info("scanner mode enabled", "max-rtt", c.rtt)
 		opts.Scan = &wiresocks.ScanOptions{V4: c.v4, V6: c.v6, MaxRTT: c.rtt}
-	}
-
-	// If the endpoint is not set, choose a random warp endpoint
-	if opts.Endpoint == "" {
-		addrPort, err := warp.RandomWarpEndpoint(c.v4, c.v6)
-		if err != nil {
-			fatal(l, err)
-		}
-		opts.Endpoint = addrPort.String()
 	}
 
 	go func() {
