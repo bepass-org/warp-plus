@@ -30,8 +30,8 @@ github.com/Psiphon-Labs/psiphon-tunnel-core v1.0.11-0.20251029164303-aa4d266ae98
 github.com/Psiphon-Labs/psiphon-tunnel-core v1.0.11-0.20251029164303-aa4d266ae982/go.mod h1:bY2QL80agFrj1Gv7bWLwWSl157BBmBE8lgmkOUMt8Ec=
 github.com/Psiphon-Labs/quic-go v0.0.0-20250527153145-79fe45fb83b1 h1:zD7JvZCV8gjvtI0AZmE81Ffc/v7A+qwU1/YfUmN/Flk=
 github.com/Psiphon-Labs/quic-go v0.0.0-20250527153145-79fe45fb83b1/go.mod h1:rONdWgPMbFjyyBai7gB1IBF4pT9r4l0GyiDst5XR1SY=
-github.com/Psiphon-Labs/utls v1.1.1-0.20241107183331-b18909f8ccaa h1:5FszHIhxb7yO267qt47tTfJOtD31k7R80L88EwNm4tc=
-github.com/Psiphon-Labs/utls v1.1.1-0.20241107183331-b18909f8ccaa/go.mod h1:dxmztdV9lf59cq44YY8r21m3b+xSjhg98cgZW8WK1p0=
+github.com/Psiphon-Labs/utls v0.0.0-20250623193530-396869e9cd87 h1:h/OnQpPMwC7pKN9YQTJ+vQATjchta6kgumJNnkJBq1k=
+github.com/Psiphon-Labs/utls v0.0.0-20250623193530-396869e9cd87/go.mod h1:1vv0gVAzq9e2XYkW8HAKrmtuuZrBdDixQFx5H22KAjI=
 github.com/adrg/xdg v0.5.3 h1:xRnxJXne7+oWDatRhR1JLnvuccuIeCoBu2rtuLqQB78=
 github.com/adrg/xdg v0.5.3/go.mod h1:nlTsY+NNiCBGCK2tpm09vRqfVzrc2fLmXGpBLF0zlTQ=
 github.com/alexbrainman/sspi v0.0.0-20231016080023-1a75b4708caa h1:LHTHcTQiSGT7VVbI0o4wBRNQIgn917usHWOd6VAffYI=
