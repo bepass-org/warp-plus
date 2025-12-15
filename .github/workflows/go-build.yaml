@@ -108,14 +108,14 @@ jobs:
           done
 
       - name: Upload warp-plus files to Artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: warp-plus_${{ env.ASSET_NAME }}_${{ env.REF }}
           path: |
             ./warp-plus_${{ env.ASSET_NAME }}/*
 
       - name: Upload warp-scan files to Artifacts
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: warp-scan_${{ env.ASSET_NAME }}_${{ env.REF }}
           path: |
